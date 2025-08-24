@@ -95,7 +95,7 @@ class Client(object):
         :return: request url in unisender API format
         """
 
-        return '{base_url}/{lang}/api/{method}'.format(
+        return '{base_url}/{lang}/api/async/{method}'.format(
             base_url=self._config['base_url'],
             lang=self._config['lang'],
             method=to_camel_case(method),
@@ -128,7 +128,7 @@ class Client(object):
 
         """ Return list of allowed unisender api methods """
 
-        return [
+        return ['get_task_result',
             'get_lists', 'create_list', 'update_list', 'delete_list',
             'subscribe', 'exclude', 'unsubscribe',
             'import_contacts', 'export_contacts',
