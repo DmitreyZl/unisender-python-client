@@ -95,11 +95,18 @@ class Client(object):
         :return: request url in unisender API format
         """
 
-        return '{base_url}/{lang}/api/async/{method}'.format(
-            base_url=self._config['base_url'],
-            lang=self._config['lang'],
-            method=to_camel_case(method),
-        )
+        if method in ['export_contacts']:
+            return '{base_url}/{lang}/api/async/{method}'.format(
+                base_url=self._config['base_url'],
+                lang=self._config['lang'],
+                method=to_camel_case(method),
+            )
+        else:
+            return '{base_url}/{lang}/api/{method}'.format(
+                base_url=self._config['base_url'],
+                lang=self._config['lang'],
+                method=to_camel_case(method),
+            )
 
     def after_request(self, response: requests.Response) -> None:
 
@@ -116,11 +123,15 @@ class Client(object):
         :param kwargs: dict, request data
         :return: requests.Response, API response obj
         """
-
-        data = self._build_request_data(kwargs)
-        url = self._get_request_url(method)
-        response = requests.post(url, data)
-        self.after_request(response)
+        if method != 'get_campaigns':
+            data = self._build_request_data(kwargs)
+            url = self._get_request_url(method)
+            response = requests.post(url, data)
+            self.after_request(response)
+        else:
+            url = self._get_request_url(method)
+            response = requests.get(url, params=kwargs['data'])
+            self.after_request(response)
         return response
 
     @property
